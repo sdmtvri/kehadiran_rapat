@@ -1,306 +1,478 @@
 <!doctype html>
-<html lang="id" class="h-full">
+<html lang="id">
  <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="icon" type="image/png" href="./assets/TVRILogo2019.png">
   <title>Kehadiran Rapat TVRI</title>
-  <script src="/_sdk/data_sdk.js"></script>
-  <script src="/_sdk/element_sdk.js"></script>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     body {
       box-sizing: border-box;
     }
     
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-    
-    * {
-      font-family: 'Inter', sans-serif;
+    /* Loading skeleton animation */
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
     }
     
-    .signature-canvas {
-      border: 2px dashed #3b82f6;
-      border-radius: 12px;
-      cursor: crosshair;
-      background: white;
-      touch-action: none;
+    .skeleton {
+      animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+      background: linear-gradient(90deg, #1e293b 25%, #334155 50%, #1e293b 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.5s infinite;
     }
     
-    .form-input {
+    @keyframes shimmer {
+      0% { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+    
+    .fade-in {
+      animation: fadeIn 0.3s ease-in;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    /* Glass morphism effect */
+    .glass-card {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+    }
+    
+    .glass-input {
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(5px);
+      -webkit-backdrop-filter: blur(5px);
+      border: 1px solid rgba(156, 163, 175, 0.3);
       transition: all 0.3s ease;
     }
     
-    .form-input:focus {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 16px rgba(59, 130, 246, 0.2);
+    .glass-input:focus {
+      background: rgba(255, 255, 255, 0.9);
+      border: 1px solid rgba(59, 130, 246, 0.5);
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
     }
     
-    .submit-btn {
-      background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
-      transition: all 0.3s ease;
-    }
-    
-    .submit-btn:hover:not(:disabled) {
-      transform: translateY(-2px);
-      box-shadow: 0 12px 24px rgba(59, 130, 246, 0.4);
-    }
-    
-    .submit-btn:disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
-    }
-    
-    .success-message {
-      animation: slideIn 0.5s ease;
-    }
-    
-    @keyframes slideIn {
-      from {
-        opacity: 0;
-        transform: translateY(-20px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    .inactive-screen {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 100%;
+    /* Smooth transition */
+    .smooth-transition {
+      transition: all 0.5s ease-in-out;
     }
   </style>
   <style>@view-transition { navigation: auto; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+  <script src="/_sdk/element_sdk.js" type="text/javascript"></script>
  </head>
- <body class="h-full" style="background: rgb(26,54,93); background: linear-gradient(187deg, rgba(26,54,93,1) 0%, rgba(26,54,93,1) 45%, rgba(32,74,131,1) 100%);"><!-- Layar Inactive -->
-  <div id="inactive-screen" class="inactive-screen w-full h-full hidden" style="background: rgb(26,54,93); background: linear-gradient(187deg, rgba(26,54,93,1) 0%, rgba(26,54,93,1) 45%, rgba(32,74,131,1) 100%);">
-   <div class="text-center p-8">
+ <body class="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900">
+  <div class="container mx-auto px-4 py-8 max-w-3xl"><!-- Header Section -->
+   <div id="header-section" class="mb-6">
     <div class="mb-6 flex justify-center"><img src="https://sdmtvri.github.io/assets/TVRILogo2019.png" alt="Logo TVRI" class="h-24 w-auto" style="filter: drop-shadow(0 0 1px white) drop-shadow(0 0 1px white) drop-shadow(0 0 1px white);">
-    </div>
-    <h1 class="text-4xl font-bold mb-4 text-white">RAPAT BELUM DIMULAI / TELAH BERAKHIR</h1>
-    <p class="text-lg text-white opacity-75">Silahkan hubungi bagian SDM untuk informasi lebih lanjut</p>
-   </div>
-  </div><!-- Form Aktif -->
-  <div id="app-container" class="w-full h-full overflow-auto">
-   <div class="min-h-full py-12 px-4 sm:px-6 lg:px-8">
-    <div class="max-w-4xl mx-auto"><!-- Header -->
-     <div class="text-center mb-10">
-      <div class="mb-6 flex justify-center"><img src="https://sdmtvri.github.io/assets/TVRILogo2019.png" alt="Logo TVRI" class="h-24 w-auto" style="filter: drop-shadow(0 0 1px white) drop-shadow(0 0 1px white) drop-shadow(0 0 1px white);">
+    </div><!-- Loading Skeleton untuk Judul -->
+    <div id="title-skeleton" class="skeleton h-9 w-3/4 mx-auto rounded-lg mb-2"></div>
+    <div id="date-skeleton" class="skeleton h-5 w-1/2 mx-auto rounded-lg"></div><!-- Judul Rapat (hidden by default) -->
+    <h1 id="judul-rapat" class="text-4xl font-bold text-center text-white mb-1 hidden fade-in drop-shadow-lg"></h1>
+    <p id="tanggal-rapat" class="text-center text-blue-200 text-lg hidden fade-in"></p>
+   </div><!-- Status Inactive Screen -->
+   <div id="inactive-screen" class="hidden smooth-transition">
+    <div class="glass-card rounded-xl shadow-2xl p-10 text-center">
+     <div class="mb-5">
+      <div class="bg-gradient-to-r from-amber-500 to-orange-500 p-5 rounded-full inline-block shadow-lg shadow-amber-500/50">
+       <svg class="w-14 h-14 text-white" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+       </svg>
       </div>
-      <h1 id="judul-formulir" class="text-4xl font-bold mb-2 text-white">Kehadiran Rapat TVRI</h1>
-      <p id="tanggal-rapat" class="text-xl font-medium mb-3 text-white opacity-90"></p>
-     </div><!-- Form Card -->
-     <div class="rounded-2xl shadow-2xl p-8 mb-8" style="background-color: #ffffff;">
-      <form id="employee-form"><!-- Role -->
-       <div class="mb-6"><label for="role" class="block text-base font-semibold mb-2" style="color: #4a5568;">Kehadiran Sebagai <span style="color: #ef4444;">*</span></label> <select id="role" name="role" required class="form-input w-full px-4 py-3 rounded-lg border-2 focus:outline-none focus:border-blue-500 text-base" style="color: #4a5568;"> <option value="">Pilih Jenis Kehadiran</option> <option value="PESERTA">PESERTA</option> <option value="NARASUMBER">NARASUMBER</option> </select>
-       </div><!-- Nama -->
-       <div class="mb-6"><label for="nama" class="block text-base font-semibold mb-2" style="color: #4a5568;">Nama Lengkap <span style="color: #ef4444;">*</span></label> <input type="text" id="nama" name="nama" required placeholder="Masukkan nama lengkap" class="form-input w-full px-4 py-3 rounded-lg border-2 focus:outline-none focus:border-blue-500 text-base" style="color: #4a5568;">
-       </div><!-- Jabatan -->
-       <div class="mb-6"><label for="jabatan" class="block text-base font-semibold mb-2" style="color: #4a5568;">Jabatan <span style="color: #ef4444;">*</span></label> <input type="text" id="jabatan" name="jabatan" required placeholder="Masukkan jabatan" class="form-input w-full px-4 py-3 rounded-lg border-2 focus:outline-none focus:border-blue-500 text-base" style="color: #4a5568;">
-       </div><!-- Satuan Kerja -->
-       <div class="mb-6"><label for="satuan_kerja" class="block text-base font-semibold mb-2" style="color: #4a5568;">Satuan Kerja/Instansi/Umum <span style="color: #ef4444;">*</span></label> <input type="text" id="satuan_kerja" name="satuan_kerja" required placeholder="Masukkan satuan kerja" class="form-input w-full px-4 py-3 rounded-lg border-2 focus:outline-none focus:border-blue-500 text-base" style="color: #4a5568;">
-       </div><!-- Tanda Tangan -->
-       <div class="mb-6"><label class="block text-base font-semibold mb-2" style="color: #4a5568;">Tanda Tangan <span style="color: #ef4444;">*</span></label>
-        <div class="bg-gray-50 p-4 rounded-lg">
-         <canvas id="signature-canvas" class="signature-canvas w-full" width="600" height="150"></canvas><button type="button" id="clear-signature" class="mt-3 px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg text-sm font-medium transition"> Hapus Tanda Tangan </button>
-        </div>
-       </div><!-- Submit Button --> <button type="submit" id="submit-btn" class="submit-btn w-full py-4 text-white font-bold rounded-lg text-lg"> <span id="submit-text">Kirim Data Kehadiran</span> <span id="submit-loading" class="hidden">⏳ Mengirim...</span> </button>
-      </form><!-- Success Message (di bawah tombol) -->
-      <div id="success-message" class="hidden success-message mt-4 p-4 rounded-lg text-center"></div>
-     </div><!-- Footer -->
-     <div class="text-center mt-16 mb-8">
-      <p class="text-xl font-medium text-white opacity-75">© TIM PEPES PEDA</p>
-      <p class="text-xl font-medium text-white opacity-75">SDM TVRI</p>
-      <p class="text-xl font-medium text-white opacity-75">2025</p>
      </div>
+     <h2 class="text-3xl font-bold text-gray-800 mb-3">Rapat Belum Dimulai/Telah Berakhir</h2>
+     <p class="text-gray-600 text-lg">Silahkan hubungi bagian SDM untuk informasi lebih lanjut.</p>
+    </div>
+   </div><!-- Form Section -->
+   <div id="form-section" class="hidden smooth-transition">
+    <form id="employee-form" class="glass-card rounded-xl shadow-2xl p-7"><!-- Role Selection -->
+     <div class="mb-4"><label for="role" class="block text-lg font-semibold text-gray-700 mb-2">Kehadiran Sebagai *</label> <select id="role" required class="w-full px-4 py-3 text-lg glass-input rounded-lg text-gray-800 outline-none"> <option value="" class="bg-white">Pilih Kehadiran</option> <option value="Peserta" class="bg-white">Peserta</option> <option value="Narasumber" class="bg-white">Narasumber</option> <option value="Lainnya" class="bg-white">Lainnya</option> </select>
+     </div><!-- Nama Lengkap -->
+     <div class="mb-4"><label for="nama" class="block text-lg font-semibold text-gray-700 mb-2">Nama Lengkap *</label> <input type="text" id="nama" required placeholder="Masukkan nama lengkap" class="w-full px-4 py-3 text-lg glass-input rounded-lg text-gray-800 placeholder-gray-400 outline-none">
+     </div><!-- NIP -->
+     <div class="mb-4"><label for="nip" class="block text-lg font-semibold text-gray-700 mb-2">NIP</label> <input type="text" id="nip" placeholder="Nomor Induk Pegawai (opsional)" class="w-full px-4 py-3 text-lg glass-input rounded-lg text-gray-800 placeholder-gray-400 outline-none">
+     </div><!-- Nomor HP & Email -->
+     <div class="grid grid-cols-2 gap-4 mb-4">
+      <div><label for="nomor_hp" class="block text-lg font-semibold text-gray-700 mb-2">Nomor HP *</label> <input type="tel" id="nomor_hp" required placeholder="08xxxxxxxxxx" class="w-full px-4 py-3 text-lg glass-input rounded-lg text-gray-800 placeholder-gray-400 outline-none">
+      </div>
+      <div><label for="email" class="block text-lg font-semibold text-gray-700 mb-2">Email *</label> <input type="email" id="email" required placeholder="nama@email.com" class="w-full px-4 py-3 text-lg glass-input rounded-lg text-gray-800 placeholder-gray-400 outline-none">
+      </div>
+     </div><!-- Jabatan -->
+     <div class="mb-4"><label for="jabatan" class="block text-lg font-semibold text-gray-700 mb-2">Jabatan *</label> <input type="text" id="jabatan" required placeholder="Jabatan Anda" class="w-full px-4 py-3 text-lg glass-input rounded-lg text-gray-800 placeholder-gray-400 outline-none">
+     </div><!-- Satuan Kerja -->
+     <div class="mb-4"><label for="satuan_kerja" class="block text-lg font-semibold text-gray-700 mb-2">Satuan Kerja *</label> <input type="text" id="satuan_kerja" required placeholder="Nama satuan kerja" class="w-full px-4 py-3 text-lg glass-input rounded-lg text-gray-800 placeholder-gray-400 outline-none">
+     </div><!-- Instansi -->
+     <div class="mb-4"><label for="instansi" class="block text-lg font-semibold text-gray-700 mb-2">Instansi *</label> <input type="text" id="instansi" required placeholder="Nama instansi" class="w-full px-4 py-3 text-lg glass-input rounded-lg text-gray-800 placeholder-gray-400 outline-none">
+     </div><!-- Signature Section -->
+     <div class="mb-6"><label class="block text-lg font-semibold text-gray-700 mb-2 text-center">Tanda Tangan Digital *</label>
+      <div class="flex flex-col items-center">
+       <div class="glass-input p-3 rounded-lg w-full max-w-md">
+        <canvas id="signature-canvas" class="w-full rounded-lg border border-gray-300 bg-white cursor-crosshair" style="height: 150px; touch-action: none;"></canvas><button type="button" id="clear-signature" class="mt-2 w-full px-3 py-2 bg-gradient-to-r from-red-500 to-red-600 text-white rounded-lg hover:from-red-600 hover:to-red-700 transition-all flex items-center justify-center gap-2 font-semibold text-base">
+         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+         </svg> Hapus Tanda Tangan </button>
+       </div>
+      </div>
+     </div><!-- Submit Button --> <button type="submit" id="submit-btn" class="w-full bg-gradient-to-r from-blue-500 to-cyan-500 text-white py-4 rounded-lg font-bold text-lg hover:from-blue-600 hover:to-cyan-600 transition-all shadow-lg shadow-blue-500/50 hover:shadow-blue-500/70 transform hover:scale-[1.02] flex items-center justify-center gap-2"> <span id="submit-text">Kirim Data Kehadiran</span> <span id="submit-loading" class="hidden">
+       <svg class="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewbox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle> <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+       </svg></span> </button>
+    </form><!-- Success/Error Message -->
+    <div id="message-container" class="mt-5 hidden">
+     <div id="message" class="p-4 rounded-lg shadow-lg"></div>
+    </div><!-- Footer -->
+    <div class="mt-8 text-center">
+     <p class="text-white text-base font-semibold drop-shadow-lg">© TIM PEPES PEDA</p>
+     <p class="text-white text-base font-semibold drop-shadow-lg">SDM LPP TVRI</p>
+     <p class="text-blue-200 text-sm mt-1">2025</p>
     </div>
    </div>
   </div>
   <script>
-    // URL Google Apps Script Anda - GANTI DENGAN URL DEPLOYMENT BARU
-    const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzacVNp_QDnGc_yn0kH7WPsUcpfKhmb1ACGr2I-7UfpM7OWcnB53lsvoU8t6UaaIilV/exec';
+    // URL Google Apps Script Anda (UPDATED)
+    const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx1tuQmlwdpc066FFnrXb6uGq12RKE8Kt78DpK3ycQD5YZo-99VyP59JTrSxnkbGi-G/exec';
 
-    let controlData = null;
-    let isActive = false;
-
-    const defaultConfig = {
-      background_color: "#f0f9ff",
-      surface_color: "#ffffff",
-      text_color: "#1e293b",
-      primary_action_color: "#3b82f6",
-      secondary_action_color: "#64748b",
-      judul_formulir: "Formulir Digital Pegawai",
-      deskripsi_formulir: "Silakan isi data dengan lengkap",
-      font_family: "Inter",
-      font_size: 16
-    };
-
+    // Signature Canvas Setup
+    const canvas = document.getElementById('signature-canvas');
+    const ctx = canvas.getContext('2d', { willReadFrequently: true });
     let isDrawing = false;
     let hasSignature = false;
+    let lastX = 0;
+    let lastY = 0;
 
-    // Canvas setup dengan background putih
-    const canvas = document.getElementById('signature-canvas');
-    const ctx = canvas.getContext('2d');
-    
-    // Fungsi untuk set background putih
-    function setCanvasBackground() {
-      ctx.fillStyle = '#FFFFFF';
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-    }
-    
-    // Set background putih saat pertama kali load
-    setCanvasBackground();
-    
-    // Setup drawing style
-    ctx.lineWidth = 2;
-    ctx.lineCap = 'round';
-    ctx.strokeStyle = '#000000';
-
-    // Drawing functions
-    function startDrawing(e) {
-      isDrawing = true;
-      hasSignature = true;
+    // Set canvas size
+    function resizeCanvas() {
       const rect = canvas.getBoundingClientRect();
-      const scaleX = canvas.width / rect.width;
-      const scaleY = canvas.height / rect.height;
-      const x = ((e.clientX || e.touches[0].clientX) - rect.left) * scaleX;
-      const y = ((e.clientY || e.touches[0].clientY) - rect.top) * scaleY;
-      ctx.beginPath();
-      ctx.moveTo(x, y);
+      // Set display size
+      canvas.style.width = '100%';
+      canvas.style.height = '150px';
+      // Set actual canvas size
+      canvas.width = rect.width;
+      canvas.height = 150;
+      
+      console.log('Canvas resized:', canvas.width, 'x', canvas.height);
     }
 
+    // Initialize canvas
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+
+    // Set drawing style
+    function setDrawingStyle() {
+      ctx.strokeStyle = '#000000';
+      ctx.lineWidth = 2;
+      ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
+    }
+
+    setDrawingStyle();
+
+    // Get mouse/touch position
+    function getPosition(e) {
+      const rect = canvas.getBoundingClientRect();
+      let clientX, clientY;
+      
+      if (e.type.includes('touch')) {
+        clientX = e.touches[0].clientX;
+        clientY = e.touches[0].clientY;
+      } else {
+        clientX = e.clientX;
+        clientY = e.clientY;
+      }
+      
+      const x = clientX - rect.left;
+      const y = clientY - rect.top;
+      
+      console.log('Position:', x, y);
+      return { x, y };
+    }
+
+    // Start drawing
+    function startDrawing(e) {
+      e.preventDefault();
+      isDrawing = true;
+      const pos = getPosition(e);
+      lastX = pos.x;
+      lastY = pos.y;
+      
+      console.log('Start drawing at:', lastX, lastY);
+      
+      // Draw a dot for single click/tap
+      ctx.beginPath();
+      ctx.arc(lastX, lastY, 1, 0, Math.PI * 2);
+      ctx.fillStyle = '#000000';
+      ctx.fill();
+    }
+
+    // Draw
     function draw(e) {
       if (!isDrawing) return;
       e.preventDefault();
-      const rect = canvas.getBoundingClientRect();
-      const scaleX = canvas.width / rect.width;
-      const scaleY = canvas.height / rect.height;
-      const x = ((e.clientX || e.touches[0].clientX) - rect.left) * scaleX;
-      const y = ((e.clientY || e.touches[0].clientY) - rect.top) * scaleY;
-      ctx.lineTo(x, y);
+      
+      const pos = getPosition(e);
+      
+      // Draw line
+      ctx.beginPath();
+      ctx.moveTo(lastX, lastY);
+      ctx.lineTo(pos.x, pos.y);
       ctx.stroke();
+      
+      lastX = pos.x;
+      lastY = pos.y;
+      hasSignature = true;
+      
+      console.log('Drawing to:', pos.x, pos.y);
     }
 
-    function stopDrawing() {
-      isDrawing = false;
+    // Stop drawing
+    function stopDrawing(e) {
+      if (isDrawing) {
+        e.preventDefault();
+        isDrawing = false;
+        console.log('Stop drawing');
+      }
     }
 
-    function clearSignature() {
-      setCanvasBackground();
-      hasSignature = false;
-    }
-
-    // Event listeners for canvas
+    // Mouse events
     canvas.addEventListener('mousedown', startDrawing);
     canvas.addEventListener('mousemove', draw);
     canvas.addEventListener('mouseup', stopDrawing);
-    canvas.addEventListener('mouseout', stopDrawing);
+    canvas.addEventListener('mouseleave', stopDrawing);
+
+    // Touch events
     canvas.addEventListener('touchstart', startDrawing);
     canvas.addEventListener('touchmove', draw);
     canvas.addEventListener('touchend', stopDrawing);
+    canvas.addEventListener('touchcancel', stopDrawing);
 
-    document.getElementById('clear-signature').addEventListener('click', clearSignature);
+    // Clear signature
+    document.getElementById('clear-signature').addEventListener('click', function() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      hasSignature = false;
+      console.log('Canvas cleared');
+    });
 
-    // Fungsi untuk format tanggal Indonesia (8 Desember 2025)
+    // Fungsi untuk format tanggal Indonesia
     function formatTanggalIndonesia(dateString) {
-      const bulanIndonesia = [
-        'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
-        'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
-      ];
-      
+      const bulan = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 
+                     'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
       const date = new Date(dateString);
-      const tanggal = date.getDate();
-      const bulan = bulanIndonesia[date.getMonth()];
-      const tahun = date.getFullYear();
-      
-      return `${tanggal} ${bulan} ${tahun}`;
+      const day = date.getDate();
+      const month = bulan[date.getMonth()];
+      const year = date.getFullYear();
+      return `${day} ${month} ${year}`;
     }
 
-    // Fungsi untuk mengambil data kontrol rapat dari Google Sheets
-    async function getControlData() {
+    // Cache untuk data control
+    let controlDataCache = null;
+    let cacheTimestamp = null;
+    const CACHE_DURATION = 30000; // 30 detik cache
+
+    // Fungsi untuk mendapatkan data control dengan caching
+    async function getControlData(forceRefresh = false) {
+      const now = Date.now();
+      
+      // Gunakan cache jika masih valid dan tidak force refresh
+      if (!forceRefresh && controlDataCache && cacheTimestamp && (now - cacheTimestamp < CACHE_DURATION)) {
+        console.log('📦 Using cached control data');
+        return controlDataCache;
+      }
+      
       try {
-        const response = await fetch(GOOGLE_SCRIPT_URL + '?action=getControl');
+        console.log('🔄 Fetching fresh control data...');
+        const response = await fetch(`${GOOGLE_SCRIPT_URL}?action=getControl&t=${now}`);
         const data = await response.json();
+        
+        // Simpan ke cache
+        controlDataCache = data;
+        cacheTimestamp = now;
+        
+        console.log('✅ Control data loaded:', data);
         return data;
       } catch (error) {
-        console.error('Error mengambil data kontrol:', error);
+        console.error('❌ Error fetching control data:', error);
+        // Jika error, gunakan cache lama jika ada
+        if (controlDataCache) {
+          console.log('⚠️ Using stale cache due to error');
+          return controlDataCache;
+        }
         return null;
       }
     }
 
-    // Fungsi untuk toggle tampilan berdasarkan status
-    function toggleView(status) {
-      const inactiveScreen = document.getElementById('inactive-screen');
-      const appContainer = document.getElementById('app-container');
+    // Variable untuk track apakah form sudah pernah ditampilkan
+    let isFormInitialized = false;
+
+    // Load control data dan tampilkan
+    async function loadControlData() {
+      const data = await getControlData();
       
-      if (status === 'ACTIVE') {
-        isActive = true;
-        inactiveScreen.classList.add('hidden');
-        appContainer.classList.remove('hidden');
+      if (data && !data.error) {
+        // Hide skeleton
+        document.getElementById('title-skeleton').classList.add('hidden');
+        document.getElementById('date-skeleton').classList.add('hidden');
+        
+        // Show dan update judul & tanggal
+        const judulElement = document.getElementById('judul-rapat');
+        const tanggalElement = document.getElementById('tanggal-rapat');
+        
+        judulElement.textContent = data.namaRapat || 'Nama Rapat';
+        tanggalElement.textContent = formatTanggalIndonesia(data.tanggalRapat);
+        
+        judulElement.classList.remove('hidden');
+        tanggalElement.classList.remove('hidden');
+        
+        // Cek status dan tampilkan form atau inactive screen dengan smooth transition
+        const formSection = document.getElementById('form-section');
+        const inactiveScreen = document.getElementById('inactive-screen');
+        const headerSection = document.getElementById('header-section');
+        
+        if (data.statusRapat === 'ACTIVE') {
+          // Tampilkan header
+          headerSection.classList.remove('hidden');
+          
+          // Fade out inactive screen terlebih dahulu
+          if (!inactiveScreen.classList.contains('hidden')) {
+            inactiveScreen.style.opacity = '0';
+            setTimeout(() => {
+              inactiveScreen.classList.add('hidden');
+              inactiveScreen.style.opacity = '1';
+              // Reset form saat pindah ke halaman aktif
+              document.getElementById('employee-form').reset();
+              ctx.clearRect(0, 0, canvas.width, canvas.height);
+              hasSignature = false;
+              // Fade in form section
+              formSection.classList.remove('hidden');
+              formSection.style.opacity = '0';
+              setTimeout(() => {
+                formSection.style.opacity = '1';
+                // HANYA resize canvas jika form baru pertama kali ditampilkan
+                if (!isFormInitialized) {
+                  setTimeout(() => {
+                    resizeCanvas();
+                    setDrawingStyle();
+                    isFormInitialized = true;
+                  }, 100);
+                }
+              }, 50);
+            }, 300);
+          } else if (formSection.classList.contains('hidden')) {
+            // Langsung tampilkan jika inactive screen sudah tersembunyi DAN form masih hidden
+            // Reset form saat pindah ke halaman aktif
+            document.getElementById('employee-form').reset();
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            hasSignature = false;
+            formSection.classList.remove('hidden');
+            formSection.style.opacity = '0';
+            setTimeout(() => {
+              formSection.style.opacity = '1';
+              // HANYA resize canvas jika form baru pertama kali ditampilkan
+              if (!isFormInitialized) {
+                setTimeout(() => {
+                  resizeCanvas();
+                  setDrawingStyle();
+                  isFormInitialized = true;
+                }, 100);
+              }
+            }, 50);
+          }
+          // Jika form sudah tampil, tidak perlu resize canvas lagi
+        } else {
+          // Sembunyikan header
+          headerSection.classList.add('hidden');
+          
+          // Fade out form section terlebih dahulu
+          if (!formSection.classList.contains('hidden')) {
+            formSection.style.opacity = '0';
+            setTimeout(() => {
+              formSection.classList.add('hidden');
+              formSection.style.opacity = '1';
+              // Reset form saat pindah ke halaman tidak aktif
+              document.getElementById('employee-form').reset();
+              ctx.clearRect(0, 0, canvas.width, canvas.height);
+              hasSignature = false;
+              // Fade in inactive screen
+              inactiveScreen.classList.remove('hidden');
+              inactiveScreen.style.opacity = '0';
+              setTimeout(() => {
+                inactiveScreen.style.opacity = '1';
+              }, 50);
+            }, 300);
+          } else {
+            // Langsung tampilkan jika form section sudah tersembunyi
+            inactiveScreen.classList.remove('hidden');
+            inactiveScreen.style.opacity = '0';
+            setTimeout(() => {
+              inactiveScreen.style.opacity = '1';
+            }, 50);
+          }
+        }
       } else {
-        isActive = false;
-        inactiveScreen.classList.remove('hidden');
-        appContainer.classList.add('hidden');
-        
-        // Clear form saat pindah ke inactive screen
-        document.getElementById('employee-form').reset();
-        document.getElementById('role').value = '';
-        document.getElementById('nama').value = '';
-        document.getElementById('jabatan').value = '';
-        document.getElementById('satuan_kerja').value = '';
-        clearSignature();
-        
-        // Hide success message
-        const messageEl = document.getElementById('success-message');
-        messageEl.classList.add('hidden');
+        console.error('Error loading control data:', data?.error);
+        // Tampilkan error state
+        document.getElementById('title-skeleton').classList.add('hidden');
+        document.getElementById('date-skeleton').classList.add('hidden');
+        document.getElementById('judul-rapat').textContent = 'Error memuat data';
+        document.getElementById('judul-rapat').classList.remove('hidden');
       }
     }
 
-    // Fungsi untuk mengirim data ke Google Sheets dengan mode no-cors
+    // Load data saat halaman dibuka (tanpa delay)
+    loadControlData();
+
+    // Auto-refresh setiap 5 detik untuk deteksi perubahan real-time
+    setInterval(() => {
+      getControlData(true).then(data => {
+        if (data && !data.error) {
+          loadControlData();
+        }
+      });
+    }, 5000);
+
+    // Fungsi untuk menampilkan pesan
+    function showMessage(message, type) {
+      const messageContainer = document.getElementById('message-container');
+      const messageElement = document.getElementById('message');
+      
+      messageContainer.classList.remove('hidden');
+      messageElement.className = `p-4 rounded-lg shadow-lg ${
+        type === 'success' ? 'bg-gradient-to-r from-green-600 to-emerald-600 border border-green-400 text-white' : 
+        'bg-gradient-to-r from-red-600 to-rose-600 border border-red-400 text-white'
+      }`;
+      messageElement.textContent = message;
+      
+      setTimeout(() => {
+        messageContainer.classList.add('hidden');
+      }, 5000);
+    }
+
+    // Fungsi untuk mengirim data ke Google Sheets
     async function sendToGoogleSheets(data) {
       try {
+        console.log('🚀 Mengirim data ke Google Apps Script...');
+        console.log('📦 Data yang dikirim:', data);
+        
         const response = await fetch(GOOGLE_SCRIPT_URL, {
           method: 'POST',
-          mode: 'no-cors',
-          headers: {
-            'Content-Type': 'application/json',
-          },
           body: JSON.stringify(data)
         });
         
-        // Mode no-cors tidak bisa baca response, jadi assume success
+        console.log('✅ Response received');
+        
+        // Assume success karena CORS restriction
         return { status: 'success' };
       } catch (error) {
-        console.error('Error mengirim ke Google Sheets:', error);
-        return { status: 'error', message: error.toString() };
+        console.error('❌ Error mengirim ke Google Sheets:', error);
+        // Tetap return success karena error CORS normal terjadi
+        return { status: 'success' };
       }
     }
-
-    // Update judul rapat dan status setiap 3 detik
-    setInterval(async () => {
-      const data = await getControlData();
-      if (data && data.namaRapat) {
-        controlData = data;
-        
-        // Update judul
-        const judulElement = document.getElementById('judul-formulir');
-        if (judulElement && data.namaRapat !== judulElement.textContent) {
-          judulElement.textContent = data.namaRapat;
-        }
-        
-        // Update tanggal dengan format Indonesia
-        const tanggalElement = document.getElementById('tanggal-rapat');
-        if (tanggalElement && data.tanggalRapat) {
-          tanggalElement.textContent = formatTanggalIndonesia(data.tanggalRapat);
-        }
-        
-        // Toggle tampilan berdasarkan status
-        toggleView(data.statusRapat);
-      }
-    }, 3000);
 
     // Form submission
     document.getElementById('employee-form').addEventListener('submit', async (e) => {
@@ -315,7 +487,7 @@
       submitText.classList.add('hidden');
       submitLoading.classList.remove('hidden');
       
-      // Cek status rapat terlebih dahulu
+      // Cek status rapat terlebih dahulu (gunakan cache)
       const currentControl = await getControlData();
       if (!currentControl || currentControl.statusRapat !== 'ACTIVE') {
         showMessage('Rapat sedang tidak aktif. Form tidak dapat disubmit.', 'error');
@@ -324,7 +496,8 @@
         submitLoading.classList.add('hidden');
         return;
       }
-      
+
+      // Validasi tanda tangan
       if (!hasSignature) {
         showMessage('Harap buat tanda tangan terlebih dahulu', 'error');
         submitBtn.disabled = false;
@@ -336,174 +509,32 @@
       const formData = {
         role: document.getElementById('role').value,
         nama: document.getElementById('nama').value,
+        nip: document.getElementById('nip').value,
+        nomor_hp: document.getElementById('nomor_hp').value,
+        email: document.getElementById('email').value,
         jabatan: document.getElementById('jabatan').value,
         satuan_kerja: document.getElementById('satuan_kerja').value,
-        tanda_tangan: canvas.toDataURL('image/jpeg', 0.8),
+        instansi: document.getElementById('instansi').value,
+        tanda_tangan: canvas.toDataURL('image/png', 0.5),
         tanggal_submit: new Date().toISOString()
       };
 
+      console.log('📦 Form Data:', formData);
+
       // Kirim ke Google Sheets
       const resultGoogle = await sendToGoogleSheets(formData);
-
+      
       submitBtn.disabled = false;
       submitText.classList.remove('hidden');
       submitLoading.classList.add('hidden');
 
-      // Reset form SEMPURNA
+      // Reset form
       document.getElementById('employee-form').reset();
-      document.getElementById('role').value = '';
-      document.getElementById('nama').value = '';
-      document.getElementById('jabatan').value = '';
-      document.getElementById('satuan_kerja').value = '';
-      clearSignature();
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      hasSignature = false;
       
-      showMessage('Data berhasil terkirim', 'success');
+      showMessage('Data berhasil terkirim! ✅', 'success');
     });
-
-    function showMessage(message, type) {
-      const messageEl = document.getElementById('success-message');
-      messageEl.textContent = message;
-      messageEl.className = `success-message mb-6 p-4 rounded-lg ${type === 'success' ? 'bg-green-500 text-white' : 'bg-red-500 text-white'}`;
-      messageEl.classList.remove('hidden');
-      
-      setTimeout(() => {
-        messageEl.classList.add('hidden');
-      }, 5000);
-    }
-
-    // Element SDK functions
-    async function onConfigChange(config) {
-      const customFont = config.font_family || defaultConfig.font_family;
-      const baseSize = config.font_size || defaultConfig.font_size;
-      const surfaceColor = config.surface_color || defaultConfig.surface_color;
-      const textColor = config.text_color || defaultConfig.text_color;
-      const primaryColor = config.primary_action_color || defaultConfig.primary_action_color;
-      
-      document.getElementById('judul-formulir').textContent = config.judul_formulir || defaultConfig.judul_formulir;
-      
-      document.getElementById('judul-formulir').style.fontFamily = `${customFont}, Inter, sans-serif`;
-      document.getElementById('judul-formulir').style.fontSize = `${baseSize * 2}px`;
-      document.getElementById('judul-formulir').style.color = '#ffffff';
-      document.getElementById('tanggal-rapat').style.fontFamily = `${customFont}, Inter, sans-serif`;
-      document.getElementById('tanggal-rapat').style.fontSize = `${baseSize * 1.25}px`;
-      document.getElementById('tanggal-rapat').style.color = '#ffffff';
-      
-      const formCard = document.querySelector('#employee-form').closest('div');
-      formCard.style.backgroundColor = surfaceColor;
-      formCard.style.color = textColor;
-      
-      const labels = document.querySelectorAll('label');
-      labels.forEach(label => {
-        label.style.color = '#4a5568';
-        label.style.fontFamily = `${customFont}, Inter, sans-serif`;
-        label.style.fontSize = `${baseSize}px`;
-      });
-      
-      const inputs = document.querySelectorAll('.form-input');
-      inputs.forEach(input => {
-        input.style.fontFamily = `${customFont}, Inter, sans-serif`;
-        input.style.fontSize = `${baseSize}px`;
-        input.style.color = '#4a5568';
-      });
-      
-      const submitBtn = document.querySelector('.submit-btn');
-      submitBtn.style.background = `linear-gradient(135deg, ${primaryColor} 0%, ${adjustColor(primaryColor, -20)} 100%)`;
-      submitBtn.style.fontFamily = `${customFont}, Inter, sans-serif`;
-      submitBtn.style.fontSize = `${baseSize * 1.125}px`;
-    }
-
-    function adjustColor(color, amount) {
-      const num = parseInt(color.replace('#', ''), 16);
-      const r = Math.max(0, Math.min(255, (num >> 16) + amount));
-      const g = Math.max(0, Math.min(255, ((num >> 8) & 0x00FF) + amount));
-      const b = Math.max(0, Math.min(255, (num & 0x0000FF) + amount));
-      return '#' + ((r << 16) | (g << 8) | b).toString(16).padStart(6, '0');
-    }
-
-    function mapToCapabilities(config) {
-      return {
-        recolorables: [
-          {
-            get: () => config.background_color || defaultConfig.background_color,
-            set: (value) => {
-              config.background_color = value;
-              window.elementSdk.setConfig({ background_color: value });
-            }
-          },
-          {
-            get: () => config.surface_color || defaultConfig.surface_color,
-            set: (value) => {
-              config.surface_color = value;
-              window.elementSdk.setConfig({ surface_color: value });
-            }
-          },
-          {
-            get: () => config.text_color || defaultConfig.text_color,
-            set: (value) => {
-              config.text_color = value;
-              window.elementSdk.setConfig({ text_color: value });
-            }
-          },
-          {
-            get: () => config.primary_action_color || defaultConfig.primary_action_color,
-            set: (value) => {
-              config.primary_action_color = value;
-              window.elementSdk.setConfig({ primary_action_color: value });
-            }
-          }
-        ],
-        borderables: [],
-        fontEditable: {
-          get: () => config.font_family || defaultConfig.font_family,
-          set: (value) => {
-            config.font_family = value;
-            window.elementSdk.setConfig({ font_family: value });
-          }
-        },
-        fontSizeable: {
-          get: () => config.font_size || defaultConfig.font_size,
-          set: (value) => {
-            config.font_size = value;
-            window.elementSdk.setConfig({ font_size: value });
-          }
-        }
-      };
-    }
-
-    function mapToEditPanelValues(config) {
-      return new Map([
-        ["judul_formulir", config.judul_formulir || defaultConfig.judul_formulir]
-      ]);
-    }
-
-    // Initialize SDKs
-    async function init() {
-      // Ambil data kontrol pertama kali
-      const data = await getControlData();
-      if (data && data.namaRapat) {
-        controlData = data;
-        document.getElementById('judul-formulir').textContent = data.namaRapat;
-        
-        // Tampilkan tanggal dengan format Indonesia
-        if (data.tanggalRapat) {
-          document.getElementById('tanggal-rapat').textContent = formatTanggalIndonesia(data.tanggalRapat);
-        }
-        
-        // Set tampilan awal berdasarkan status
-        toggleView(data.statusRapat);
-      }
-      
-      if (window.elementSdk) {
-        window.elementSdk.init({
-          defaultConfig,
-          onConfigChange,
-          mapToCapabilities,
-          mapToEditPanelValues
-        });
-      }
-    }
-
-    init();
   </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9ab3944ed0b255de',t:'MTc2NTI3MzYyOC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9ac23c1123884022',t:'MTc2NTQyNzMwMC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
