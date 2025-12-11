@@ -320,13 +320,17 @@
 
     // Fungsi untuk format tanggal Indonesia
     function formatTanggalIndonesia(dateString) {
-      const bulan = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 
-                     'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
-      const date = new Date(dateString);
-      const day = date.getDate();
-      const month = bulan[date.getMonth()];
-      const year = date.getFullYear();
-      return `${day} ${month} ${year}`;
+    const bulan = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 
+                    'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+    
+    // Parse manual DD/MM/YYYY dari Apps Script
+    const parts = dateString.split('/'); // ["06", "02", "2025"]
+    const day = parseInt(parts[0], 10);   // 6
+    const monthIndex = parseInt(parts[1], 10) - 1; // 1 (Februari index 1)
+    const year = parseInt(parts[2], 10);  // 2025
+    
+    const month = bulan[monthIndex];
+    return `${day} ${month} ${year}`;
     }
 
     // Cache untuk data control
