@@ -136,7 +136,7 @@
   </div>
   <script>
     // URL Google Apps Script Anda (UPDATED)
-    const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx1tuQmlwdpc066FFnrXb6uGq12RKE8Kt78DpK3ycQD5YZo-99VyP59JTrSxnkbGi-G/exec';
+    const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyYZEFkfhE_mJdIPy1plbGBfZfkp0iGNmdqfLSOiEpqVsj1J_803h6rm6GdPrpyYcH_/exec';
 
     // Signature Canvas Setup
     const canvas = document.getElementById('signature-canvas');
@@ -145,18 +145,34 @@
     let hasSignature = false;
     let lastX = 0;
     let lastY = 0;
+    let signatureData = null; // SIMPAN DATA TANDA TANGAN
 
     // Set canvas size
     function resizeCanvas() {
-      const rect = canvas.getBoundingClientRect();
-      // Set display size
-      canvas.style.width = '100%';
-      canvas.style.height = '150px';
-      // Set actual canvas size
-      canvas.width = rect.width;
-      canvas.height = 150;
-      
-      console.log('Canvas resized:', canvas.width, 'x', canvas.height);
+    const rect = canvas.getBoundingClientRect();
+    // Simpan data sebelum resize
+    const tempData = hasSignature ? canvas.toDataURL() : null;
+    
+    // Set display size
+    canvas.style.width = '100%';
+    canvas.style.height = '150px';
+    // Set actual canvas size
+    canvas.width = rect.width;
+    canvas.height = 150;
+    
+    // Re-apply drawing style setelah resize
+    setDrawingStyle();
+    
+    // Restore gambar setelah resize
+    if (tempData) {
+        const img = new Image();
+        img.onload = function() {
+        ctx.drawImage(img, 0, 0);
+        };
+        img.src = tempData;
+    }
+    
+    console.log('Canvas resized:', canvas.width, 'x', canvas.height);
     }
 
     // Initialize canvas
@@ -165,78 +181,100 @@
 
     // Set drawing style
     function setDrawingStyle() {
-      ctx.strokeStyle = '#000000';
-      ctx.lineWidth = 2;
-      ctx.lineCap = 'round';
-      ctx.lineJoin = 'round';
+    ctx.strokeStyle = '#000000';
+    ctx.lineWidth = 2;
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
     }
 
     setDrawingStyle();
 
+    // FUNGSI: Simpan gambar ke variable
+    function saveSignatureData() {
+    if (hasSignature) {
+        signatureData = canvas.toDataURL();
+        console.log('Signature data saved');
+    }
+    }
+
+    // FUNGSI: Restore gambar dari variable
+    function restoreSignatureData() {
+    if (signatureData) {
+        const img = new Image();
+        img.onload = function() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(img, 0, 0);
+        console.log('Signature restored');
+        };
+        img.src = signatureData;
+    }
+    }
+
     // Get mouse/touch position
     function getPosition(e) {
-      const rect = canvas.getBoundingClientRect();
-      let clientX, clientY;
-      
-      if (e.type.includes('touch')) {
+    const rect = canvas.getBoundingClientRect();
+    let clientX, clientY;
+    
+    if (e.type.includes('touch')) {
         clientX = e.touches[0].clientX;
         clientY = e.touches[0].clientY;
-      } else {
+    } else {
         clientX = e.clientX;
         clientY = e.clientY;
-      }
-      
-      const x = clientX - rect.left;
-      const y = clientY - rect.top;
-      
-      console.log('Position:', x, y);
-      return { x, y };
+    }
+    
+    const x = clientX - rect.left;
+    const y = clientY - rect.top;
+    
+    console.log('Position:', x, y);
+    return { x, y };
     }
 
     // Start drawing
     function startDrawing(e) {
-      e.preventDefault();
-      isDrawing = true;
-      const pos = getPosition(e);
-      lastX = pos.x;
-      lastY = pos.y;
-      
-      console.log('Start drawing at:', lastX, lastY);
-      
-      // Draw a dot for single click/tap
-      ctx.beginPath();
-      ctx.arc(lastX, lastY, 1, 0, Math.PI * 2);
-      ctx.fillStyle = '#000000';
-      ctx.fill();
+    e.preventDefault();
+    isDrawing = true;
+    const pos = getPosition(e);
+    lastX = pos.x;
+    lastY = pos.y;
+    
+    console.log('Start drawing at:', lastX, lastY);
+    
+    // Draw a dot for single click/tap
+    ctx.beginPath();
+    ctx.arc(lastX, lastY, 1, 0, Math.PI * 2);
+    ctx.fillStyle = '#000000';
+    ctx.fill();
     }
 
     // Draw
     function draw(e) {
-      if (!isDrawing) return;
-      e.preventDefault();
-      
-      const pos = getPosition(e);
-      
-      // Draw line
-      ctx.beginPath();
-      ctx.moveTo(lastX, lastY);
-      ctx.lineTo(pos.x, pos.y);
-      ctx.stroke();
-      
-      lastX = pos.x;
-      lastY = pos.y;
-      hasSignature = true;
-      
-      console.log('Drawing to:', pos.x, pos.y);
+    if (!isDrawing) return;
+    e.preventDefault();
+    
+    const pos = getPosition(e);
+    
+    // Draw line
+    ctx.beginPath();
+    ctx.moveTo(lastX, lastY);
+    ctx.lineTo(pos.x, pos.y);
+    ctx.stroke();
+    
+    lastX = pos.x;
+    lastY = pos.y;
+    hasSignature = true;
+    
+    console.log('Drawing to:', pos.x, pos.y);
     }
 
     // Stop drawing
     function stopDrawing(e) {
-      if (isDrawing) {
+    if (isDrawing) {
         e.preventDefault();
         isDrawing = false;
+        saveSignatureData(); // SIMPAN saat selesai menggambar
         console.log('Stop drawing');
-      }
+    }
     }
 
     // Mouse events
@@ -253,9 +291,31 @@
 
     // Clear signature
     document.getElementById('clear-signature').addEventListener('click', function() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      hasSignature = false;
-      console.log('Canvas cleared');
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    hasSignature = false;
+    signatureData = null; // Reset saved data
+    console.log('Canvas cleared');
+    });
+
+    // FIX MOBILE SCROLL: Restore canvas saat scroll selesai
+    let scrollTimeout;
+    window.addEventListener('scroll', function() {
+    clearTimeout(scrollTimeout);
+    scrollTimeout = setTimeout(function() {
+        restoreSignatureData();
+    }, 150);
+    }, { passive: true });
+
+    // FIX MOBILE: Restore canvas saat visibility berubah
+    document.addEventListener('visibilitychange', function() {
+    if (!document.hidden) {
+        restoreSignatureData();
+    }
+    });
+
+    // FIX MOBILE: Restore canvas saat page focus kembali
+    window.addEventListener('focus', function() {
+    restoreSignatureData();
     });
 
     // Fungsi untuk format tanggal Indonesia
